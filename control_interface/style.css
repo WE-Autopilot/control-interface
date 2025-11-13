@@ -3,25 +3,34 @@ Screen {
 }
 
 DiagnosticsDisplay {
-    height: 12;
+    height: 1fr;
     background: $surface;
-    border: solid $primary;
-    margin: 1;
     padding: 1;
 }
 
-#cli_container {
-    height: 1fr;
-    border: solid $accent;
-    margin: 1;
-}
-
-#cli_header {
+.header {
     background: $accent;
     color: $text;
     height: 1;
     content-align: center middle;
     text-style: bold;
+}
+
+.pane {
+    border: solid $accent;
+    margin: 1;
+}
+
+#diagnostics_container {
+    width: 1.5fr;
+    border: solid $accent;
+    margin: 1;
+}
+
+#cli_container {
+    width: 2fr;
+    border: solid $accent;
+    margin: 1;
 }
 
 #output_scroll {
@@ -36,10 +45,16 @@ CommandOutput {
 
 #input_container {
     height: 5;
+    width: 100%;
     background: $panel;
-    padding: 1;
 }
 
 Input {
     width: 100%;
+}
+
+PathCanvas {
+    border: round white;
+    width: auto;
+    height: auto;
 }

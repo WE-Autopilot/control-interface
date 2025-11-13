@@ -3,12 +3,13 @@ import threading
 import rclpy
 
 from textual.app import App, ComposeResult
-from textual.containers import Container, VerticalScroll
+from textual.containers import Container, VerticalScroll, Horizontal
 from textual.widgets import Header, Footer, Input, Label
 
 from node import AP1SystemInterfaceNode
 from command_output import CommandOutput
 from diagnostics_display import DiagnosticsDisplay
+from visual_path import PathCanvas
 
 class AP1DebugUI(App):
     # me n my homies hate writing css
@@ -22,14 +23,18 @@ class AP1DebugUI(App):
 
     def compose(self) -> ComposeResult:
         yield Header()
-        yield DiagnosticsDisplay(self.ros_node)
 
-        with Container(id='cli_container'):
-            yield Label('COMMAND LINE INTERFACE', id='cli_header')
-            with VerticalScroll(id='output_scroll'):
-                yield self.command_output 
-            with Container(id='input_container'):
-                yield Input(placeholder='>', id='command_input')
+        with Horizontal(classes='half-height'):
+            with Container(id='diagnostics_container', classes='pane'):
+                yield Label("DIAGNOSTICS", classes='header')
+                yield DiagnosticsDisplay(self.ros_node)
+                yield PathCanvas()
+
+            with Container(id='cli_container', classes='pane'):
+                yield Label('COMMAND LINE INTERFACE', classes='header')
+                with VerticalScroll(id='output_scroll'):
+                    yield self.command_output 
+                yield Input(placeholder='Command...', id='command_input')
 
         yield Footer()
 
