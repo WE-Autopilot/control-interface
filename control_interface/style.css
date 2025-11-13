@@ -22,13 +22,13 @@ DiagnosticsDisplay {
 }
 
 #diagnostics_container {
-    width: 1.5fr;
+    width: 65; /* Do not touch unless you've changed visual_path width */
     border: solid $accent;
     margin: 1;
 }
 
 #cli_container {
-    width: 2fr;
+    width: 1fr;
     border: solid $accent;
     margin: 1;
 }
@@ -49,10 +49,7 @@ CommandOutput {
     background: $panel;
 }
 
-Input {
-    width: 100%;
-}
-
+/* Do not touch unless you've changed visual_path width */
 PathCanvas {
     border: round white;
     width: auto;

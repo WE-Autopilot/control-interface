@@ -28,7 +28,7 @@ class DiagnosticsDisplay(Container):
 
         display_text = f"""Actuation:
 - Speed:\t{speed:6.2f} m/s
-- Wheel Turn Angle:\t{turn_angle:6.2f} rads
+- Turn Angle:\t{turn_angle:6.2f} rads
 
 Control Interface:
 - Target Speed:\t{target_speed:6.2f} m/s

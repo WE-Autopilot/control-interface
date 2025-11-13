@@ -11,6 +11,18 @@ from command_output import CommandOutput
 from diagnostics_display import DiagnosticsDisplay
 from visual_path import PathCanvas
 
+def print_help(self):
+    self.command_output.add_line('=' * 40)
+    self.command_output.add_line('Welcome to AP1 Debug UI')
+    self.command_output.add_line('Commands:')
+    self.command_output.add_line('\tspeed <value>     - Set target speed (m/s)')
+    self.command_output.add_line('\tlocation <x> <y>  - Set target location (m)')
+    self.command_output.add_line('\tget_speed_profile - Return planned speed profile (m/s)')
+    self.command_output.add_line('\treset             - Reset system and simulation (if applicable)')
+    self.command_output.add_line('\tclear             - Clear screen')
+    self.command_output.add_line('\thelp              - Print this screen')
+    self.command_output.add_line('=' * 40)
+        
 class AP1DebugUI(App):
     # me n my homies hate writing css
     # god bless chat:
@@ -28,7 +40,8 @@ class AP1DebugUI(App):
             with Container(id='diagnostics_container', classes='pane'):
                 yield Label("DIAGNOSTICS", classes='header')
                 yield DiagnosticsDisplay(self.ros_node)
-                yield PathCanvas()
+                yield Label("PLANNED PATH", classes='header')
+                yield PathCanvas(self.ros_node)
 
             with Container(id='cli_container', classes='pane'):
                 yield Label('COMMAND LINE INTERFACE', classes='header')
@@ -43,15 +56,7 @@ class AP1DebugUI(App):
         threading.Thread(target=rclpy.spin, args=(self.ros_node,), daemon=True).start()
 
         # welcome msg
-        self.command_output.add_line('=' * 20)
-        self.command_output.add_line('Welcome to AP1 Debug UI')
-        self.command_output.add_line('Commands:')
-        self.command_output.add_line('\tspeed <value>\t\t- Set target speed (m/s)')
-        self.command_output.add_line('\tlocation <x> <y>\t\t- Set target location (m)')
-        self.command_output.add_line('\treset\t\t- Reset system and simulation (if applicable)')
-        self.command_output.add_line('\tclear\t\t- Clear screen')
-        self.command_output.add_line('\thelp\t\t- Print this screen')
-        self.command_output.add_line('=' * 20)
+        print_help(self)
 
         # focus the input
         self.query_one('#command_input', Input).focus()
@@ -78,13 +83,7 @@ class AP1DebugUI(App):
             command = parts[0].lower()
 
             if command == 'help':
-                self.command_output.add_line('Commands:')
-                self.command_output.add_line('\tspeed <value>\t\t- Set target speed (m/s)')
-                self.command_output.add_line('\tlocation <x> <y>\t\t- Set target location (m)')
-                self.command_output.add_line('\treset\t\t- Reset system and simulation (if applicable)')
-                self.command_output.add_line('\tclear\t\t- Clear screen')
-                self.command_output.add_line('\thelp\t\t- Print this screen')
-                self.command_output.add_line('=' * 20)
+                print_help(self)
 
             elif command == 'clear':
                 self.command_output.history.clear()
@@ -106,6 +105,15 @@ class AP1DebugUI(App):
                     x, y = float(parts[1]), float(parts[2])
                     self.ros_node.set_target_location(x, y)
                     self.command_output.add_line(f"✓ Target location set to ({x}, {y})")
+
+            elif command == 'get_speed_profile':
+                speed_profile = self.ros_node.speed_profile
+
+                out = ''
+                for spd in speed_profile:
+                    out += spd.__str__() + ' m/s, '
+                out = out[:-2]
+                self.command_output.add_line('{ ' + out + ' }')
 
             elif command == 'reset':
                 self.command_output.add_line("Not yet implemented.")
