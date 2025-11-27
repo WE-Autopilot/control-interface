@@ -50,6 +50,10 @@ class PathCanvas(Canvas):
     def on_mount(self):
         # update at 10hz
         self.set_interval(1 / self.refresh_rate, self.draw_path)
+    
+    def set_pixel_checked(self, x, y, color):
+        if 0 <= x < self.width and 0 <= y < self.height:
+            self.set_pixel(x, y, color)
 
     def draw_path(self):
         waypoints = self.node.target_path # these are in meters (global coords)
@@ -64,9 +68,9 @@ class PathCanvas(Canvas):
 
         # draw axes 
         for x in range(width):
-            self.set_pixel(x, cy, DIM)
+            self.set_pixel_checked(x, cy, DIM)
         for y in range(height):
-            self.set_pixel(cx, y, DIM)
+            self.set_pixel_checked(cx, y, DIM)
         
         # plot waypoints & connect with lines
         for i, point in enumerate(waypoints):
@@ -87,7 +91,7 @@ class PathCanvas(Canvas):
             x, y = global_to_canvas_coords(point)
             sx = cx + x # shift origin to center
             sy = cy - y # flip y upward
-            self.set_pixel(sx, sy, PURPLE)
+            self.set_pixel_checked(sx, sy, PURPLE)
 
         # draw features on top
         for feature in self.node.features:
@@ -113,7 +117,7 @@ class PathCanvas(Canvas):
                 color = WHITE 
 
             if 0 <= sx < self.width and 0 <= sy < self.height:
-                self.set_pixel(sx, sy, color)
+                self.set_pixel_checked(sx, sy, color)
 
 
  
